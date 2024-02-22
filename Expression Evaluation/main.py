@@ -14,5 +14,5 @@ def main():
 
 
 if __name__ == "__main__":
-    print(evaluate("5 + (5 - 2) * 3"))
+    print(evaluate("5 + 4 - (5 - 2) * 3"))
     # main()

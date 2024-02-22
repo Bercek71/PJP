@@ -1,4 +1,5 @@
 def convertToPostfix(inp):
+    # TODO: Parse Larger Numbers
     operators = {'+': 1, '-': 1, '*': 2, '/': 2}
     postFix = []
     stack = []
@@ -14,6 +15,8 @@ def convertToPostfix(inp):
         elif i == ')':
             while stack and stack[len(stack) - 1] != '(':
                 postFix.append(stack.pop())
+            if not stack:
+                return "ERROR"
             stack.pop()
         elif i == ' ':
             continue
@@ -25,24 +28,29 @@ def convertToPostfix(inp):
 def evaluatePostfix(postfix):
     stack = []
     for i in postfix:
-        if isinstance(i, int):
+        if type(i) == int:
             stack.append(i)
         else:
-            if len(stack) < 2:
+            if len(stack) == 0:
                 return "ERROR"
-            second = stack.pop()
-            first = stack.pop()
+            num2 = stack.pop()
+            if len(stack) == 0:
+                return "ERROR"
+            num1 = stack.pop()
+
             if i == '+':
-                stack.append(first + second)
+                stack.append(num1 + num2)
             elif i == '-':
-                stack.append(first - second)
+                stack.append(num1 - num2)
             elif i == '*':
-                stack.append(first * second)
+                stack.append(num1 * num2)
             elif i == '/':
-                stack.append(first / second)
-    if len(stack) > 1:
-        return "ERROR"
-    return stack[0]
+                stack.append(num1 / num2)
+    if len(stack) == 1:
+        return stack.pop()
+    return "ERROR"
+
+
 
 
 def evaluate(inp):
