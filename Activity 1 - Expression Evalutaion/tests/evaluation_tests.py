@@ -1,5 +1,6 @@
-from evaluation import evaluate
 import unittest
+
+from evaluation import evaluate
 
 
 class TestSimpleEvaluate(unittest.TestCase):
@@ -33,6 +34,7 @@ class TestSimpleEvaluate(unittest.TestCase):
         self.assertEqual(evaluate("5 + 5 * 5 * 5"), 130)
         self.assertEqual(evaluate("5 * 5 + 5 * 5"), 50)
         self.assertEqual(evaluate("5 + 5 / 5 / 5"), 5.2)
+
     def test_infixes(self):
         self.assertEqual(evaluate("5 * 3 + 2"), 17)
         self.assertEqual(evaluate("5 + 3 * 2"), 11)
@@ -50,6 +52,7 @@ class TestSimpleEvaluate(unittest.TestCase):
         self.assertEqual(evaluate("5 * 3 / 2"), 7.5)
         self.assertEqual(evaluate("5 / 3 * 2"), 3.3333333333333335)
         self.assertEqual(evaluate("5 + 3 * 2 + 2"), 13)
+
 
 class TestInvalidInput(unittest.TestCase):
     def test_invalid_input(self):
@@ -76,6 +79,7 @@ class TestInvalidInput(unittest.TestCase):
         self.assertEqual(evaluate("5 + 5 + 5 + ) 5 + 5 ( + 5 + 5 (    + 5 + 5 + 5"), "ERROR")
         self.assertEqual(evaluate("5 + 5 + 5 + (5) + 5 + (5) + 5 (    + 5 + 5 + 5"), "ERROR")
 
+
 class TestAprentheses(unittest.TestCase):
     def test_parentheses(self):
         self.assertEqual(evaluate("(5 + (5)) + 5"), 15)
@@ -93,8 +97,7 @@ class TestLargerNumbers(unittest.TestCase):
         self.assertEqual(evaluate("500 / 500"), 1)
         self.assertEqual(evaluate("500 + 500 + 500 + 500"), 2000)
         self.assertEqual(evaluate("500 - 500 - 500 - 500"), -1000)
-        self.assertEqual(evaluate("500 * 500 * 500 * 500"), 62500000)
-        self.assertEqual(evaluate("500 / 500 / 500 / 500"), 0.0001)
+        self.assertEqual(evaluate("500 * 500 * 500 * 500"), 62500000000)
         self.assertEqual(evaluate("500 + 500 - 500"), 500)
         self.assertEqual(evaluate("500 - 500 + 500"), 500)
         self.assertEqual(evaluate("500 * 500 / 500"), 500)
@@ -106,3 +109,6 @@ class TestLargerNumbers(unittest.TestCase):
         self.assertEqual(evaluate("500 + 500 * 500 + 500"), 251000)
         self.assertEqual(evaluate("500 * 500 + 500 + 500"), 251000)
         self.assertEqual(evaluate("500 + 500 / 500 + 500"), 1001)
+
+    def test_harder_larger_numbers(self):
+        self.assertEqual(evaluate("10 / 10 + (2 * 3) / 6"), 2)

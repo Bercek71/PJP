@@ -1,18 +1,19 @@
 from evaluation import evaluate
 
+
 def main():
     try:
         n = int(input())
+        values = []
     except ValueError:
         print("ERROR")
         exit()
-    if n < 0:
-        print("ERROR")
-        exit()
-    if n > 0:
-        print(evaluate(input().strip()))
+    for i in range(n):
+        values.append(evaluate((input().strip())))
+
+    for i in values:
+        print(i)
 
 
 if __name__ == "__main__":
-    print(evaluate("5 + 4 - (5 - 2) * 3"))
-    # main()
+    main()
