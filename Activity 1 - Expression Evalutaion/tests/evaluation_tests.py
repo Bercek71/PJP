@@ -58,8 +58,6 @@ class TestInvalidInput(unittest.TestCase):
     def test_invalid_input(self):
         self.assertEqual(evaluate("5 + 5 +"), "ERROR")
         self.assertEqual(evaluate("5 + 5 5"), "ERROR")
-        self.assertEqual(evaluate("5 + 5 + 5 +"), "ERROR")
-        self.assertEqual(evaluate("5 + 5 + 5 5"), "ERROR")
         self.assertEqual(evaluate("5 + 5 + 5 + 5 +"), "ERROR")
         self.assertEqual(evaluate("5 + 5 + 5 + 5 5"), "ERROR")
         self.assertEqual(evaluate("5 + 5 + 5 + 5 + 5 +"), "ERROR")
@@ -67,21 +65,18 @@ class TestInvalidInput(unittest.TestCase):
         self.assertEqual(evaluate("5 + 5 + 5 + 5 + 5 + 5 +"), "ERROR")
         self.assertEqual(evaluate("5 + 5 + 5 + 5 + 5 + 5 5"), "ERROR")
         self.assertEqual(evaluate("5 + 5 + 5 + 5 + 5 + 5 + 5 +"), "ERROR")
-        self.assertEqual(evaluate("5 + 5 + 5 + 5 + 5 + 5 + 5 5"), "ERROR")
-        self.assertEqual(evaluate("5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 +"), "ERROR")
-        self.assertEqual(evaluate("5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 5"), "ERROR")
         self.assertEqual(evaluate("5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 +"), "ERROR")
-        self.assertEqual(evaluate("5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 5"), "ERROR")
         self.assertEqual(evaluate("5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 + 5 +"), "ERROR")
-        self.assertEqual(evaluate("5 + 5 + 5 + 5 + 5 + 5 + 5 (    + 5 + 5 + )"), "ERROR")
-        self.assertEqual(evaluate("5 + 5 + 5 + 5 + 5 + 5 + 5 (    + 5 + 5 + 5"), "ERROR")
-        self.assertEqual(evaluate("asdfsgdfg"), "ERROR")
-        self.assertEqual(evaluate("5 + 5 + 5 + ) 5 + 5 ( + 5 + 5 (    + 5 + 5 + 5"), "ERROR")
-        self.assertEqual(evaluate("5 + 5 + 5 + (5) + 5 + (5) + 5 (    + 5 + 5 + 5"), "ERROR")
+        self.assertEqual(evaluate("1 + 3 daasda"), "ERROR")
+        self.assertEqual(evaluate("1 ** 3 + 3"), "ERROR")
+        self.assertEqual(evaluate("1^3"), "ERROR")
+        self.assertEqual(evaluate("()()()"), "ERROR")
+        self.assertEqual(evaluate("(()(((0))"), "ERROR")
+        self.assertEqual(evaluate("(((((0))))"), "ERROR")
+        self.assertEqual(evaluate("(0 + - 1)"), "ERROR")
 
-
-class TestAprentheses(unittest.TestCase):
-    def test_parentheses(self):
+class TestParity(unittest.TestCase):
+    def test_parity(self):
         self.assertEqual(evaluate("(5 + (5)) + 5"), 15)
         self.assertEqual(evaluate("(5 + 5) * 5"), 50)
         self.assertEqual(evaluate("(5 + 5 + 5 + 5) + 5"), 25)
