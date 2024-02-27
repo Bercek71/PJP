@@ -4,7 +4,6 @@ def createNumber(numbers):
 
 
 def convertToPostfix(inp):
-    # TODO: Parse Larger Numbers
     operators = {'+': 1, '-': 1, '*': 2, '/': 2}
     postFix = []
     stack = []
