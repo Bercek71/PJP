@@ -9,7 +9,7 @@ public class GrammarOps {
     public GrammarOps(Grammar g) {
         this.g = g;
         compute_empty();
-        compute_first();
+        compute_first_table();
     }
 
     public Set<Nonterminal> getEmptyNonterminals() {
@@ -47,45 +47,70 @@ public class GrammarOps {
         } while (changed);
     }
 
-    private Map<Nonterminal, Set<Terminal>> firstSets;
+    private Table firstTable;
 
-    public Map<Nonterminal, Set<Terminal>> getFirst() {
-        return firstSets;
+    public Set<Terminal> getFirst(Rule r) {
+        Set<Terminal> result = new TreeSet<Terminal>();
+        int runCount = 0;
+        for (Symbol s : r.getRHS()) {
+            if (s instanceof Terminal) {
+                result.add((Terminal) s);
+                return result;
+            }
+            if (s instanceof Nonterminal) {
+                result.addAll(firstTable.getTerminals((Nonterminal) s));
+                if (!emptyNonterminals.contains(s)) {
+                    return result;
+                }
+            }
+            runCount++;
+        }
+        if (runCount == r.getRHS().size()) {
+            result.add(new Terminal("{e}"));
+        }
+        return result;
     }
 
-    private void compute_first() {
-        firstSets = new HashMap<Nonterminal, Set<Terminal>>();
-        for (Nonterminal nt : g.getNonterminals()) {
-            firstSets.put(nt, new TreeSet<Terminal>());
+//    public Map<Nonterminal, Set<Terminal>> getFirst() {
+//        return firstSets;
+//    }
+
+    private void compute_first_table() {
+        firstTable = new Table(g.getNonterminals(), g.getSymbols());
+        for (Rule r : g.getRules()) {
+            for (Symbol s : r.getRHS()) {
+                if (s instanceof Terminal) {
+                    firstTable.set(r.getLHS(), s, true);
+                    break;
+                }
+                if (s instanceof Nonterminal) {
+                    firstTable.set(r.getLHS(), s, true);
+                    if (!emptyNonterminals.contains(s)) {
+                        break;
+                    }
+                }
+            }
         }
         boolean changed;
         do {
             changed = false;
             for (Nonterminal nt : g.getNonterminals()) {
-                for (Rule r : nt.getRules()) {
-                    for (Symbol s : r.getRHS()) {
-                        if (s instanceof Terminal) {
-                            if (!firstSets.get(nt).contains(s)) {
-                                firstSets.get(nt).add((Terminal) s);
-                                changed = true;
-                            }
-                            break;
-                        }
-                        if (s instanceof Nonterminal) {
-                            for (Terminal t : firstSets.get(s)) {
-                                if (!firstSets.get(nt).contains(t)) {
-                                    firstSets.get(nt).add(t);
+                for (Symbol s : g.getSymbols()) {
+                    if (s instanceof Nonterminal && firstTable.get(nt, s)) {
+                        for (Symbol s1 : g.getSymbols()) {
+                            if (firstTable.get((Nonterminal) s, s1)) {
+                                if (!firstTable.get(nt, s1)) {
+                                    firstTable.set(nt, s1, true);
                                     changed = true;
                                 }
                             }
-                            if (!emptyNonterminals.contains(s)) {
-                                break;
-                            }
+
                         }
                     }
                 }
             }
         } while (changed);
+        System.out.println(firstTable);
     }
 
 

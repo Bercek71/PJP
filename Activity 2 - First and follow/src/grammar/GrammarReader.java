@@ -42,6 +42,9 @@ public final class GrammarReader {
                         sym = getSym();
                     }
                 }
+                if(rule.getRHS().isEmpty()){
+                    //TODO implement epsilon
+                }
                 lhs.addRule(rule);
             } while (sym == '|');
             if (sym != ';') {

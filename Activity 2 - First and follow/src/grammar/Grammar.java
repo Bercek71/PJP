@@ -10,6 +10,8 @@ public interface Grammar {
 
     Collection<Terminal> getTerminals();
 
+    Collection<Symbol> getSymbols();
+
     List<Rule> getRules();
 
     Nonterminal getStartNonterminal();

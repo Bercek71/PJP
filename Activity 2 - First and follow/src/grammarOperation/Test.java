@@ -1,6 +1,7 @@
 package grammarOperation;
 
 import java.io.*;
+import java.util.Collection;
 
 import grammar.*;
 
@@ -30,14 +31,24 @@ public class Test {
         }
         System.out.println();
 
-        // First
-        for (Nonterminal nt : grammar.getNonterminals()) {
-            System.out.print(nt.getName() + ": ");
-            for (Terminal t : go.getFirst().get(nt)) {
-                System.out.print(t.getName() + " ");
-            }
-            System.out.println();
+        //First
+        for(Rule r : grammar.getRules()){
+            System.out.println(r.getRHS().toString());
         }
+
+        for (Rule r : grammar.getRules()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("First(")
+                    .append(r.getLHS().getName()).append(":").append(r.getRHS().toString())
+                    .append(") = ");
+            Collection<Terminal> first = go.getFirst(r);
+            for (Terminal t : first) {
+                sb.append(t.getName()).append(" ");
+            }
+            sb.append("\n");
+            System.out.print(sb.toString());
+        }
+
     }
 
 

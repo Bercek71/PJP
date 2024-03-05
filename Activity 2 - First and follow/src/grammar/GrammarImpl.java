@@ -10,6 +10,14 @@ public class GrammarImpl implements Grammar {
         return terminals.values();
     }
 
+    @Override
+    public Collection<Symbol> getSymbols() {
+        ArrayList<Symbol> symbols = new ArrayList<Symbol>();
+        symbols.addAll(getTerminals());
+        symbols.addAll(getNonterminals());
+        return symbols;
+    }
+
     public Terminal addTerminal(String name) {
         Terminal t = (Terminal) terminals.get(name);
         if (t == null) {

@@ -15,5 +15,10 @@ public abstract class Symbol implements Comparable {
         return name.compareTo(((Symbol) obj).name);
     }
 
+    @Override
+    public String toString() {
+        return name;
+    }
+
     private final String name;
 }
