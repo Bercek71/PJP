@@ -10,6 +10,7 @@ public class GrammarOps {
         this.g = g;
         compute_empty();
         compute_first_table();
+        compute_follow_table();
     }
 
     public Set<Nonterminal> getEmptyNonterminals() {
@@ -28,6 +29,9 @@ public class GrammarOps {
                 for (Rule r : nt.getRules()) {
                     boolean allEmpty = true;
                     for (Symbol s : r.getRHS()) {
+                        if (s instanceof Terminal && ((Terminal) s).getType() == Terminal.Type.EPSILON) {
+                            continue;
+                        }
                         if (s instanceof Terminal) {
                             allEmpty = false;
                             break;
@@ -49,10 +53,10 @@ public class GrammarOps {
 
     private Table firstTable;
 
-    public Set<Terminal> getFirst(Rule r) {
+    public Set<Terminal> getFirst(Collection<Symbol> symbols) {
         Set<Terminal> result = new TreeSet<Terminal>();
         int runCount = 0;
-        for (Symbol s : r.getRHS()) {
+        for (Symbol s : symbols) {
             if (s instanceof Terminal) {
                 result.add((Terminal) s);
                 return result;
@@ -65,8 +69,8 @@ public class GrammarOps {
             }
             runCount++;
         }
-        if (runCount == r.getRHS().size()) {
-            result.add(new Terminal("{e}"));
+        if (runCount == symbols.size()) {
+            result.add(new Terminal(null));
         }
         return result;
     }
@@ -76,9 +80,15 @@ public class GrammarOps {
 //    }
 
     private void compute_first_table() {
-        firstTable = new Table(g.getNonterminals(), g.getSymbols());
+        firstTable = new Table(g.getNonterminals(), g.getSymbols().stream().filter(s -> {
+            return !(s instanceof Terminal) || ((Terminal) s).getType() != Terminal.Type.EPSILON;
+        }).toList()
+        );
         for (Rule r : g.getRules()) {
             for (Symbol s : r.getRHS()) {
+                if (s instanceof Terminal && ((Terminal) s).getType() == Terminal.Type.EPSILON) {
+                    continue;
+                }
                 if (s instanceof Terminal) {
                     firstTable.set(r.getLHS(), s, true);
                     break;
@@ -91,26 +101,43 @@ public class GrammarOps {
                 }
             }
         }
-        boolean changed;
-        do {
-            changed = false;
-            for (Nonterminal nt : g.getNonterminals()) {
-                for (Symbol s : g.getSymbols()) {
-                    if (s instanceof Nonterminal && firstTable.get(nt, s)) {
-                        for (Symbol s1 : g.getSymbols()) {
-                            if (firstTable.get((Nonterminal) s, s1)) {
-                                if (!firstTable.get(nt, s1)) {
-                                    firstTable.set(nt, s1, true);
-                                    changed = true;
-                                }
-                            }
+        firstTable.addRowsTogether();
+    }
 
-                        }
-                    }
+    private Table followTable;
+
+    private void compute_follow_table() {
+        followTable = new Table(g.getNonterminals(), g.getSymbols());
+
+        followTable.set(g.getStartNonterminal(), new Terminal(null), true);
+
+        for (Rule r : g.getRules()) {
+            Nonterminal nonterminalFound = null;
+            Collection<Symbol> alfa = new ArrayList<Symbol>();
+            for (Symbol s : r.getRHS()) {
+                if (nonterminalFound != null) {
+                    alfa.add(s);
+                }
+                if (s instanceof Nonterminal) {
+                    nonterminalFound = (Nonterminal) s;
                 }
             }
-        } while (changed);
-        System.out.println(firstTable);
+            if (!alfa.isEmpty()) {
+                followTable.set(nonterminalFound, r.getLHS(), true);
+                continue;
+            }
+            Set<Terminal> firstAlfa = getFirst(alfa);
+            if(nonterminalFound == null){
+                continue;
+            }
+            for (Terminal t : firstAlfa) {
+                followTable.set(nonterminalFound, t, true);
+            }
+
+        }
+
+        System.out.println(followTable);
+
     }
 
 

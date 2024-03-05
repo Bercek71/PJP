@@ -42,8 +42,9 @@ public final class GrammarReader {
                         sym = getSym();
                     }
                 }
-                if(rule.getRHS().isEmpty()){
+                if (rule.getRHS().isEmpty()) {
                     //TODO implement epsilon
+                    rule.addSymbol(new Terminal(null));
                 }
                 lhs.addRule(rule);
             } while (sym == '|');
@@ -64,7 +65,7 @@ public final class GrammarReader {
     private static final int SYM_EOF = -1;
 
     private int getSym() throws IOException {
-        for (;;) {
+        for (; ; ) {
             if (ch < 0) {
                 return SYM_EOF;
             }
@@ -96,6 +97,7 @@ public final class GrammarReader {
         ch = inp.read();
         return sym;
     }
+
     private final LineNumberReader inp;
 
     private int ch;

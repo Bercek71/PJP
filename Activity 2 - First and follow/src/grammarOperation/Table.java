@@ -53,7 +53,12 @@ public class Table {
         StringBuilder sb = new StringBuilder();
         sb.append("  |");
         for (Symbol s : table.get(table.keySet().iterator().next()).keySet()) {
-            sb.append(" ").append(s).append(" |");
+            sb.append(" ");
+            if (s instanceof Terminal && ((Terminal) s).getType() == Terminal.Type.EPSILON) {
+                sb.append("ε |");
+            } else {
+                sb.append(s).append(" |");
+            }
         }
         sb.append("\n");
         for (Nonterminal nt : table.keySet()) {
@@ -67,5 +72,26 @@ public class Table {
             sb.append("\n");
         }
         return sb.toString();
+    }
+
+    public void addRowsTogether() {
+        boolean changed;
+        do {
+            changed = false;
+            for (Nonterminal nt : table.keySet()) {
+                for (Symbol s : table.get(nt).keySet()) {
+                    if (s instanceof Nonterminal && table.get(nt).get(s)) {
+                        for (Symbol s1 : table.get((Nonterminal) s).keySet()) {
+                            if (table.get((Nonterminal) s).get(s1)) {
+                                if (!table.get(nt).get(s1)) {
+                                    table.get(nt).put(s1, true);
+                                    changed = true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        } while (changed);
     }
 }

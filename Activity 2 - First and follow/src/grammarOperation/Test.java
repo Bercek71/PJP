@@ -26,22 +26,20 @@ public class Test {
         GrammarOps go = new GrammarOps(grammar);
 
         /* first step, computing nonterminals that can generate empty word */
-        for (Nonterminal nt : go.getEmptyNonterminals()) {
-            System.out.print(nt.getName() + " ");
-        }
-        System.out.println();
+//        for (Nonterminal nt : go.getEmptyNonterminals()) {
+//            System.out.print(nt.getName() + " ");
+//        }
+//        System.out.println();
 
         //First
-        for(Rule r : grammar.getRules()){
-            System.out.println(r.getRHS().toString());
-        }
-
         for (Rule r : grammar.getRules()) {
             StringBuilder sb = new StringBuilder();
-            sb.append("First(")
-                    .append(r.getLHS().getName()).append(":").append(r.getRHS().toString())
-                    .append(") = ");
-            Collection<Terminal> first = go.getFirst(r);
+            sb.append("First[").append(r.getLHS().getName()).append(":");
+            for (Symbol s : r.getRHS()) {
+                sb.append(s.getName());
+            }
+            sb.append("] = ");
+            Collection<Terminal> first = go.getFirst(r.getRHS());
             for (Terminal t : first) {
                 sb.append(t.getName()).append(" ");
             }
