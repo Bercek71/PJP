@@ -1,6 +1,7 @@
 package grammarOperation;
 
 import java.io.*;
+
 import grammar.*;
 
 public class Test {
@@ -29,5 +30,15 @@ public class Test {
         }
         System.out.println();
 
+        // First
+        for (Nonterminal nt : grammar.getNonterminals()) {
+            System.out.print(nt.getName() + ": ");
+            for (Terminal t : go.getFirst().get(nt)) {
+                System.out.print(t.getName() + " ");
+            }
+            System.out.println();
+        }
     }
+
+
 }

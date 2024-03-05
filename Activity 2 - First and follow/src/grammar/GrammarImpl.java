@@ -38,9 +38,7 @@ public class GrammarImpl implements Grammar {
         ArrayList<Rule> rules = new ArrayList<Rule>();
 
         for (Nonterminal nt : this.getNonterminals()) {
-            for (Rule r : nt.getRules()) {
-                rules.add(r);
-            }
+            rules.addAll(nt.getRules());
         }
         return rules;
     }

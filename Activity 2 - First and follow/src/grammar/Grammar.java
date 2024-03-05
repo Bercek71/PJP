@@ -15,4 +15,5 @@ public interface Grammar {
     Nonterminal getStartNonterminal();
 
     void dump(PrintStream out);
+
 }
