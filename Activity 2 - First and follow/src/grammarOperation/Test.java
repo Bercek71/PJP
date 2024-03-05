@@ -2,6 +2,7 @@ package grammarOperation;
 
 import java.io.*;
 import java.util.Collection;
+import java.util.Set;
 
 import grammar.*;
 
@@ -21,15 +22,10 @@ public class Test {
             return;
         }
 
-        grammar.dump(System.out);
+//        grammar.dump(System.out);
 
         GrammarOps go = new GrammarOps(grammar);
 
-        /* first step, computing nonterminals that can generate empty word */
-//        for (Nonterminal nt : go.getEmptyNonterminals()) {
-//            System.out.print(nt.getName() + " ");
-//        }
-//        System.out.println();
 
         //First
         for (Rule r : grammar.getRules()) {
@@ -44,7 +40,17 @@ public class Test {
                 sb.append(t.getName()).append(" ");
             }
             sb.append("\n");
-            System.out.print(sb.toString());
+            System.out.print(sb);
+        }
+
+        //Follow
+        for (Nonterminal nt : grammar.getNonterminals()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Follow[").append(nt.getName()).append("] = ");
+            Set<Terminal> follow = go.getFollow(nt);
+            follow.stream().sorted().forEach(t -> sb.append(t.getName()).append(" "));
+            sb.append("\n");
+            System.out.print(sb);
         }
 
     }

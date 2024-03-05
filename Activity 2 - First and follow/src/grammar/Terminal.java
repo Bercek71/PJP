@@ -12,7 +12,7 @@ public class Terminal extends Symbol {
 
     public Terminal(String name) {
         super(Objects.requireNonNullElse(name, "{e}"));
-        this.type = name == null ? Type.EPSILON : Type.REGULAR;
+        this.type = name == null || name.equals("{e}") ? Type.EPSILON : Type.REGULAR;
     }
 
     public Type getType() {

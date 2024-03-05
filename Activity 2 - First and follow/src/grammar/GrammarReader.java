@@ -44,7 +44,8 @@ public final class GrammarReader {
                 }
                 if (rule.getRHS().isEmpty()) {
                     //TODO implement epsilon
-                    rule.addSymbol(new Terminal(null));
+                    Terminal t = grammar.addTerminal("{e}");
+                    rule.addSymbol(t);
                 }
                 lhs.addRule(rule);
             } while (sym == '|');

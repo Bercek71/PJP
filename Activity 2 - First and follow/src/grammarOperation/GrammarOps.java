@@ -3,6 +3,7 @@ package grammarOperation;
 import grammar.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class GrammarOps {
 
@@ -109,40 +110,48 @@ public class GrammarOps {
     private void compute_follow_table() {
         followTable = new Table(g.getNonterminals(), g.getSymbols());
 
-        followTable.set(g.getStartNonterminal(), new Terminal(null), true);
 
-        for (Rule r : g.getRules()) {
-            Nonterminal nonterminalFound = null;
-            Collection<Symbol> alfa = new ArrayList<Symbol>();
-            for (Symbol s : r.getRHS()) {
-                if (nonterminalFound != null) {
-                    alfa.add(s);
-                }
-                if (s instanceof Nonterminal) {
-                    nonterminalFound = (Nonterminal) s;
-                }
+        Terminal epsilon;
+        for (Symbol s : g.getSymbols()) {
+            if (s instanceof Terminal && ((Terminal) s).getType() == Terminal.Type.EPSILON) {
+                followTable.set(g.getStartNonterminal(), s, true);
+                epsilon = (Terminal) s;
+                break;
             }
-            if (!alfa.isEmpty()) {
-                followTable.set(nonterminalFound, r.getLHS(), true);
-                continue;
-            }
-            Set<Terminal> firstAlfa = getFirst(alfa);
-            if(nonterminalFound == null){
-                continue;
-            }
-            for (Terminal t : firstAlfa) {
-                followTable.set(nonterminalFound, t, true);
-            }
-
         }
 
-        System.out.println(followTable);
+        for (Rule r : g.getRules()) {
+            for (Symbol s : r.getRHS()) {
+                if (s instanceof Nonterminal) {
+                    Collection<Symbol> alpha = r.getRHS().subList(r.getRHS().indexOf(s) + 1, r.getRHS().size());
+                    if (alpha.isEmpty()) {
+                        followTable.set((Nonterminal) s, r.getLHS(), true);
+                        continue;
+                    }
+                    Set<Terminal> first = getFirst(alpha);
+                    //followTable.set((Nonterminal) s, t, true);
+                    for (Terminal t : first) {
+                        if (t.getType() != Terminal.Type.EPSILON) {
+                            followTable.set((Nonterminal) s, t, true);
+                        }
+                        if (t.getType() == Terminal.Type.EPSILON) {
+//                            followTable.set((Nonterminal) s, t, true);
+                            followTable.set((Nonterminal) s, r.getLHS(), true);
+                        }
+                    }
+                }
+            }
+        }
+        followTable.addRowsTogether();
+
+//        System.out.println(followTable);
 
     }
 
 
-    public Nonterminal getFollow() {
-        return null;
+    public Set<Terminal> getFollow(Nonterminal nonterminal) {
+        return followTable.getTerminals(nonterminal);
+
     }
 
     Grammar g;
